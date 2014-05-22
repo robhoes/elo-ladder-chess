@@ -32,9 +32,9 @@ eval `opam config -env`
 git clone http://github.com/robhoes/elo-ladder
 cd elo-ladder
 make
-./ladder print --gh-pages --title "XenServer Chess Ladder" $HOME/players $HOME/games --reverse > index.md
-./ladder json $HOME/players $HOME/games > ladder.json
-(echo set terminal png; ./ladder history --format=gnuplot $HOME/players $HOME/games) | gnuplot > ladder.png
+./ladder print --gh-pages --title "XenServer Chess Ladder" ../players ../games --reverse > index.md
+./ladder json ../players ../games > ladder.json
+(echo set terminal png; ./ladder history --format=gnuplot ../players ../games) | gnuplot > ladder.png
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
