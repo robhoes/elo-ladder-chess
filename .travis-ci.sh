@@ -48,6 +48,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 
   #go to home and setup git
   cd $HOME
+  git config --global user.email "travis@travis-ci.org"
+  git config --global user.name "Travis"
 
   #using token clone gh-pages branch
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/robhoes/elo-ladder-games.git  gh-pages > /dev/null
