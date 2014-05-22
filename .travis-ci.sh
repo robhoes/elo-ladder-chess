@@ -29,57 +29,39 @@ opam install ${OPAM_PACKAGES}
 eval `opam config -env`
 
 # Post-boilerplate
+git clone http://github.com/robhoes/elo-ladder
+cd elo-ladder
 make
-./ladder print --gh-pages --title "XenServer Chess Ladder" players games --reverse > index.md
-./ladder json players games > ladder.json
-(echo set terminal png; ./ladder history --format=gnuplot players games) | gnuplot > ladder.png
+./ladder print --gh-pages --title "XenServer Chess Ladder" $HOME/players $HOME/games --reverse > index.md
+./ladder json $HOME/players $HOME/games > ladder.json
+(echo set terminal png; ./ladder history --format=gnuplot $HOME/players $HOME/games) | gnuplot > ladder.png
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
 
   #copy data we're interested in to other place
-  cp index.md $HOME/index.md
+  cp index.html $HOME/index.html
+  cp ladder.js $HOME/ladder.js
   cp ladder.json $HOME/ladder.json
   cp ladder.png $HOME/ladder.png
+  cp style.css $HOME/style.css
 
   #go to home and setup git
   cd $HOME
-  git config --global user.email "travis@travis-ci.org"
-  git config --global user.name "Travis"
 
   #using token clone gh-pages branch
-  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/simonjbeaumont/elo-ladder.git  gh-pages > /dev/null
+  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/robhoes/elo-ladder-games.git  gh-pages > /dev/null
 
   #go into directory and copy data we're interested in to that directory
   cd gh-pages
-  cp -f $HOME/index.md .
-  cp -f $HOME/ladder.png .
-  cp -f $HOME/ladder.json .
-
-  #add, commit and push files
-  git add index.md
-  git add ladder.png
-  git commit --allow-empty -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
-  git push -fq origin gh-pages > /dev/null
-  
-  echo -e "Updated Si's gh-pages with latest ladder\n"
-  
-  #similar for Rob's github pages
-  cd $HOME
-  rm -rf gh-pages
-
-  #using token clone gh-pages branch
-  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/robhoes/elo-ladder.git  gh-pages > /dev/null
-
-  #go into directory and copy data we're interested in to that directory
-  cd gh-pages
+  cp -f $HOME/index.html .
+  cp -f $HOME/ladder.js .
   cp -f $HOME/ladder.json .
   cp -f $HOME/ladder.png .
+  cp -f $HOME/style.css .
 
   #add, commit and push files
-  git add ladder.json
-  git add ladder.png
-  git commit --allow-empty -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
+  git commit --allow-empty -am "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
 
   echo -e "Updated Rob's gh-pages with latest ladder\n"
